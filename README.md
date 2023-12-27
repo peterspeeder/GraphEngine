@@ -27,7 +27,7 @@ This Python code provides functionality for generating a random directed graph w
 3. Run the example:
 
     ```bash
-    python3 main.py
+    python3 graph.py
     ```
 
 ## Code Structure
