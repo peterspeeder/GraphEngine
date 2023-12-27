@@ -1,7 +1,6 @@
 # Graph Visualization and Shortest Path Algorithm
 
-![Alt Text](SS.png)
-
+![Graph Visualization](SS.png)
 
 This Python code provides functionality for generating a random directed graph with weighted edges, visualizing the graph using matplotlib and networkx, and computing the shortest paths from a specified source node using Dijkstra's algorithm.
 
@@ -53,4 +52,3 @@ shortest_paths = GraphEngine.shortest_path_summary(len(random_edges), random_edg
 print("Shortest Paths Summary:")
 for node, distance in shortest_paths.items():
     print(f"Node {node}: Shortest Distance from Source (0): {distance}")
-
