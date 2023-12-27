@@ -39,9 +39,13 @@ class GraphVisualizer:
         pos = layouts[layout](self.G)
 
         plt.figure(figsize=(12, 12))  # Increase figure size
-        nx.draw(self.G, pos, with_labels=True, node_size=300, node_color="skyblue", font_size=8, font_color="black",
-                font_weight="bold", arrowsize=15, width=1.5, edge_color="gray")
 
+        # Draw nodes
+        node_colors = ["red" if node in path else "green" for node in self.G.nodes()]
+        nx.draw(self.G, pos, with_labels=True, node_size=300, node_color=node_colors, font_size=8, font_color="black",
+                font_weight="bold", arrowsize=15, width=1.5, edge_color="lightgray")
+
+        # Draw edges
         if path:
             path_edges = [(path[i], path[i + 1]) for i in range(len(path) - 1)]
             nx.draw_networkx_edges(self.G, pos, edgelist=path_edges, edge_color='r', width=2.0)
@@ -50,6 +54,7 @@ class GraphVisualizer:
         nx.draw_networkx_edge_labels(self.G, pos, edge_labels=labels)
 
         plt.show()
+
 
 class GraphEngine:
     @staticmethod
@@ -115,14 +120,19 @@ class GraphEngine:
 # Example usage
 if __name__ == "__main__":
     # Generate random edges
-    random_edges = GraphEngine.generate_random_edges(n_nodes=12, max_weight=10, density=.4)
-    print("Edges:", random_edges)
+    random_edges = GraphEngine.generate_random_edges(n_nodes=15, max_weight=200, density=0.2)
+    custom_edges = [
+        (0, 1, 10),
+        (0, 2, 3),
+        (1, 3, 2),
+        (2, 7, 4)]
+    print("Edges:", custom_edges)
 
     # Visualize the graph
     #GraphEngine.visualize_graph(random_edges, layout='random')
-    layout = 'kamada_kawai'
+    layout = 'fruchterman_reingold'
     # Find and visualize the most efficient path
-    target_node = 1  # Change the target node as needed
+    target_node = 14  # Change the target node as needed
     most_efficient_path = GraphEngine.find_most_efficient_path(len(random_edges), random_edges, src=0, target=target_node)
 
     print(f"Most Efficient Path to Node {target_node}: {most_efficient_path}")
