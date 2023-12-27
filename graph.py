@@ -4,6 +4,7 @@ import heapq
 import matplotlib.pyplot as plt
 import networkx as nx
 from heapdict import heapdict
+import scipy
 
 class GraphVisualizer:
     def __init__(self, times):
@@ -114,16 +115,16 @@ class GraphEngine:
 # Example usage
 if __name__ == "__main__":
     # Generate random edges
-    random_edges = GraphEngine.generate_random_edges(n_nodes=7, max_weight=10, density=0.4)
+    random_edges = GraphEngine.generate_random_edges(n_nodes=12, max_weight=10, density=.4)
     print("Edges:", random_edges)
 
     # Visualize the graph
-    GraphEngine.visualize_graph(random_edges, layout='circular')
-
+    #GraphEngine.visualize_graph(random_edges, layout='random')
+    layout = 'kamada_kawai'
     # Find and visualize the most efficient path
-    target_node = 2  # Change the target node as needed
+    target_node = 1  # Change the target node as needed
     most_efficient_path = GraphEngine.find_most_efficient_path(len(random_edges), random_edges, src=0, target=target_node)
 
     print(f"Most Efficient Path to Node {target_node}: {most_efficient_path}")
 
-    GraphEngine.visualize_graph(random_edges, layout='circular', path=most_efficient_path)
+    GraphEngine.visualize_graph(random_edges, layout=layout, path=most_efficient_path)
