@@ -3,6 +3,7 @@ import collections
 import heapq
 import matplotlib.pyplot as plt
 import networkx as nx
+from heapdict import heapdict
 
 class GraphVisualizer:
     def __init__(self, times):
@@ -16,16 +17,33 @@ class GraphVisualizer:
             for neighbor, weight in neighbors:
                 self.G.add_edge(node, neighbor, weight=weight)
 
-    def draw_graph(self, layout='circular'):
-        if layout == 'circular':
-            pos = nx.circular_layout(self.G)
-        elif layout == 'spring':
-            pos = nx.spring_layout(self.G)
-        else:
-            pos = nx.shell_layout(self.G)  # Default to shell layout if layout is not recognized
+    def draw_graph(self, layout=None, path=None):
+        layouts = {
+            'circular': nx.circular_layout,
+            'spring': nx.spring_layout,
+            'shell': nx.shell_layout,
+            'kamada_kawai': nx.kamada_kawai_layout,
+            'planar': nx.planar_layout,
+            'spectral': nx.spectral_layout,
+            'random': nx.random_layout,
+            'bipartite': nx.bipartite_layout,
+            'spiral': nx.spiral_layout,
+            'fruchterman_reingold': nx.fruchterman_reingold_layout,
+        }
 
-        nx.draw(self.G, pos, with_labels=True, node_size=700, node_color="skyblue", font_size=10, font_color="black",
-                font_weight="bold", arrowsize=20, width=2, edge_color="gray")
+        if layout not in layouts:
+            print(f"Unknown layout '{layout}'. Using 'circular' layout.")
+            layout = 'circular'
+
+        pos = layouts[layout](self.G)
+
+        plt.figure(figsize=(12, 12))  # Increase figure size
+        nx.draw(self.G, pos, with_labels=True, node_size=300, node_color="skyblue", font_size=8, font_color="black",
+                font_weight="bold", arrowsize=15, width=1.5, edge_color="gray")
+
+        if path:
+            path_edges = [(path[i], path[i + 1]) for i in range(len(path) - 1)]
+            nx.draw_networkx_edges(self.G, pos, edgelist=path_edges, edge_color='r', width=2.0)
 
         labels = nx.get_edge_attributes(self.G, 'weight')
         nx.draw_networkx_edge_labels(self.G, pos, edge_labels=labels)
@@ -44,9 +62,9 @@ class GraphEngine:
         return edges
 
     @staticmethod
-    def visualize_graph(times, layout='circular'):
+    def visualize_graph(times, layout='circular', path=None):
         visualizer = GraphVisualizer(times)
-        visualizer.draw_graph(layout)
+        visualizer.draw_graph(layout, path)
 
     @staticmethod
     def shortest_path_summary(n, edges, src):
@@ -73,17 +91,39 @@ class GraphEngine:
 
         return shortest
 
+    @staticmethod
+    def find_most_efficient_path(n, edges, src, target):
+        adj = collections.defaultdict(list)
+
+        for s, d, weight in edges:
+            adj[s].append([d, weight])
+
+        minHeap = [[0, src, []]]  # Include an empty list for path tracking
+
+        while minHeap:
+            w1, n1, path = heapq.heappop(minHeap)
+            if n1 == target:
+                return path + [n1]  # Return the path if the target is reached
+
+            for n2, w2 in adj[n1]:
+                if n2 not in path:
+                    heapq.heappush(minHeap, [w1 + w2, n2, path + [n1]])
+
+        return []
+
 # Example usage
 if __name__ == "__main__":
     # Generate random edges
-    random_edges = GraphEngine.generate_random_edges(n_nodes=5, max_weight=10, density=0.4)
-    print("Random Edges:", random_edges)
+    random_edges = GraphEngine.generate_random_edges(n_nodes=7, max_weight=10, density=0.4)
+    print("Edges:", random_edges)
 
     # Visualize the graph
     GraphEngine.visualize_graph(random_edges, layout='circular')
 
-    # Compute and print shortest paths summary
-    shortest_paths = GraphEngine.shortest_path_summary(len(random_edges), random_edges, src=0)
-    print("Shortest Paths Summary:")
-    for node, distance in shortest_paths.items():
-        print(f"Node {node}: Shortest Distance from Source (0): {distance}")
+    # Find and visualize the most efficient path
+    target_node = 2  # Change the target node as needed
+    most_efficient_path = GraphEngine.find_most_efficient_path(len(random_edges), random_edges, src=0, target=target_node)
+
+    print(f"Most Efficient Path to Node {target_node}: {most_efficient_path}")
+
+    GraphEngine.visualize_graph(random_edges, layout='circular', path=most_efficient_path)
