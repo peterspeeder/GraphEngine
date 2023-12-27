@@ -39,6 +39,8 @@ The code is organized into two classes:
 
 ## Example
 
+### Using Random Edges
+
 ```python
 # Generate random edges
 random_edges = GraphEngine.generate_random_edges(n_nodes=5, max_weight=10, density=0.4)
