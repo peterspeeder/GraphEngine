@@ -1,6 +1,6 @@
 # Graph Visualization and Shortest Path Algorithm
 
-![Alt Text](https://github.com/peterspeeder/GraphEngine/tree/main#:~:text=now-,Screenshot%202023%2D12%2D27%20at%204.03.49%20AM.png,-Add%20files%20via)
+![Alt Text](Screenshot 2023-12-27 at 4.03.49 AM.png)
 
 
 This Python code provides functionality for generating a random directed graph with weighted edges, visualizing the graph using matplotlib and networkx, and computing the shortest paths from a specified source node using Dijkstra's algorithm.
